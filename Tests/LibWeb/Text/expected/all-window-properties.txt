@@ -63,6 +63,7 @@ CloseEvent
 CloseWatcher
 Comment
 CompositionEvent
+CompressionStream
 CountQueuingStrategy
 Crypto
 CryptoKey
@@ -87,6 +88,7 @@ DataTransferItem
 DataTransferItemList
 DataView
 Date
+DecompressionStream
 DisposableStack
 Document
 DocumentFragment

@@ -24,6 +24,8 @@ public:
 
     enum class ColorType {
         RGB, // This is used by CSSRGB for rgb(...) and rgba(...).
+        A98RGB,
+        DisplayP3,
         HSL,
         HWB,
         Lab,
@@ -32,6 +34,8 @@ public:
         OKLCH,
         sRGB, // This is used by CSSColor for color(srgb ...).
         sRGBLinear,
+        ProPhotoRGB,
+        Rec2020,
         XYZD50,
         XYZD65,
     };

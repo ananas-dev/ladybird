@@ -5777,7 +5777,7 @@ RefPtr<CSSStyleValue> Parser::parse_font_language_override_value(TokenStream<Com
         }
         transaction.commit();
         if (length < 4)
-            return StringStyleValue::create(MUST(String::formatted("{<4}", string_value)));
+            return StringStyleValue::create(MUST(String::formatted("{:<4}", string_value)));
         return string;
     }
 
@@ -6506,13 +6506,13 @@ RefPtr<CSSStyleValue> Parser::parse_easing_value(TokenStream<ComponentValue>& to
         }
 
         // Perform extra validation
-        // https://drafts.csswg.org/css-easing/#funcdef-step-easing-function-steps
-        // The first parameter specifies the number of intervals in the function. It must be a positive integer greater than 0
-        // unless the second parameter is jump-none in which case it must be a positive integer greater than 1.
+        // https://drafts.csswg.org/css-easing/#step-easing-functions
+        // If the <step-position> is jump-none, the <integer> must be at least 2, or the function is invalid.
+        // Otherwise, the <integer> must be at least 1, or the function is invalid.
         if (steps.position == EasingStyleValue::Steps::Position::JumpNone) {
-            if (intervals < 1)
+            if (intervals <= 1)
                 return nullptr;
-        } else if (intervals < 0) {
+        } else if (intervals <= 0) {
             return nullptr;
         }
 

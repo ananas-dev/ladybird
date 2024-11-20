@@ -249,13 +249,6 @@ void EventTarget::remove_an_event_listener(DOMEventListener& listener)
     m_data->event_listener_list.remove_first_matching([&](auto& entry) { return entry.ptr() == &listener; });
 }
 
-void EventTarget::remove_from_event_listener_list(DOMEventListener& listener)
-{
-    if (!m_data)
-        return;
-    m_data->event_listener_list.remove_first_matching([&](auto& entry) { return entry.ptr() == &listener; });
-}
-
 // https://dom.spec.whatwg.org/#dom-eventtarget-dispatchevent
 WebIDL::ExceptionOr<bool> EventTarget::dispatch_event_binding(Event& event)
 {

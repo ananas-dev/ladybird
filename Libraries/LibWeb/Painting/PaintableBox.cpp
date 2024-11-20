@@ -437,6 +437,16 @@ void PaintableBox::paint(PaintContext& context, PaintPhase phase) const
     }
 }
 
+void PaintableBox::set_stacking_context(NonnullOwnPtr<StackingContext> stacking_context)
+{
+    m_stacking_context = move(stacking_context);
+}
+
+void PaintableBox::invalidate_stacking_context()
+{
+    m_stacking_context = nullptr;
+}
+
 BordersData PaintableBox::remove_element_kind_from_borders_data(PaintableBox::BordersDataWithElementKind borders_data)
 {
     return {
@@ -933,7 +943,7 @@ TraversalDecision PaintableWithLines::hit_test(CSSPixelPoint position, HitTestTy
     }
 
     for (auto const& fragment : fragments()) {
-        if (fragment.paintable().stacking_context())
+        if (fragment.paintable().has_stacking_context())
             continue;
         auto fragment_absolute_rect = fragment.absolute_rect();
         if (fragment_absolute_rect.contains(position_adjusted_by_scroll_offset)) {
@@ -1167,6 +1177,10 @@ void PaintableBox::resolve_paint_properties()
     if (background_layers) {
         m_resolved_background = resolve_background_layers(*background_layers, *this, background_color, background_rect, normalized_border_radii_data());
     };
+
+    if (auto mask_image = computed_values.mask_image()) {
+        mask_image->resolve_for_size(layout_node_with_style_and_box_metrics(), absolute_padding_box_rect().size());
+    }
 }
 
 void PaintableWithLines::resolve_paint_properties()

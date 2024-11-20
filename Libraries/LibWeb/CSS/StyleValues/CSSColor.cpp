@@ -15,10 +15,18 @@ namespace {
 
 CSSColorValue::ColorType color_type_from_string_view(StringView color_space)
 {
+    if (color_space == "a98-rgb"sv)
+        return CSSColorValue::ColorType::A98RGB;
+    if (color_space == "display-p3"sv)
+        return CSSColorValue::ColorType::DisplayP3;
     if (color_space == "srgb"sv)
         return CSSColorValue::ColorType::sRGB;
     if (color_space == "srgb-linear"sv)
         return CSSColorValue::ColorType::sRGBLinear;
+    if (color_space == "prophoto-rgb"sv)
+        return CSSColorValue::ColorType::ProPhotoRGB;
+    if (color_space == "rec2020"sv)
+        return CSSColorValue::ColorType::Rec2020;
     if (color_space == "xyz-d50"sv)
         return CSSColorValue::ColorType::XYZD50;
     if (color_space == "xyz"sv || color_space == "xyz-d65")
@@ -65,6 +73,12 @@ Color CSSColor::to_color(Optional<Layout::NodeWithStyle const&>) const
     auto const c3 = resolve_with_reference_value(m_properties.channels[2], 1).value_or(0);
     auto const alpha_val = resolve_alpha(m_properties.alpha).value_or(1);
 
+    if (color_type() == ColorType::A98RGB)
+        return Color::from_a98rgb(c1, c2, c3, alpha_val);
+
+    if (color_type() == ColorType::DisplayP3)
+        return Color::from_display_p3(c1, c2, c3, alpha_val);
+
     if (color_type() == ColorType::sRGB) {
         auto const to_u8 = [](float c) -> u8 { return round_to<u8>(clamp(255 * c, 0, 255)); };
         return Color(to_u8(c1), to_u8(c2), to_u8(c3), to_u8(alpha_val));
@@ -72,6 +86,12 @@ Color CSSColor::to_color(Optional<Layout::NodeWithStyle const&>) const
 
     if (color_type() == ColorType::sRGBLinear)
         return Color::from_linear_srgb(c1, c2, c3, alpha_val);
+
+    if (color_type() == ColorType::ProPhotoRGB)
+        return Color::from_pro_photo_rgb(c1, c2, c3, alpha_val);
+
+    if (color_type() == ColorType::Rec2020)
+        return Color::from_rec2020(c1, c2, c3, alpha_val);
 
     if (color_type() == ColorType::XYZD50)
         return Color::from_xyz50(c1, c2, c3, alpha_val);

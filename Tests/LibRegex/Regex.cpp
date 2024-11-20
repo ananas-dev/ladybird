@@ -1042,6 +1042,8 @@ TEST_CASE(optimizer_atomic_groups)
         // (b+)(b+) produces an intermediate block with no matching ops, the optimiser should ignore that block when looking for following matches and correctly detect the overlap between (b+) and (b+).
         // note that the second loop may be rewritten to a ForkReplace, but the first loop should not be rewritten.
         Tuple { "(b+)(b+)"sv, "bbb"sv, true },
+        // Don't treat [\S] as [\s]; see ladybird#2296.
+        Tuple { "([^\\s]+?)\\(([\\s\\S]*)\\)"sv, "a(b)"sv, true },
     };
 
     for (auto& test : tests) {
@@ -1072,7 +1074,7 @@ TEST_CASE(optimizer_char_class_lut)
 TEST_CASE(optimizer_alternation)
 {
     Array tests {
-        // Pattern, Subject, Expected length
+        // Pattern, Subject, Expected length [0 == fail]
         Tuple { "a|"sv, "a"sv, 1u },
         Tuple { "a|a|a|a|a|a|a|a|a|b"sv, "a"sv, 1u },
         Tuple { "ab|ac|ad|bc"sv, "bc"sv, 2u },
@@ -1082,13 +1084,19 @@ TEST_CASE(optimizer_alternation)
         Tuple { "^(\\d+|x)"sv, "42"sv, 2u },
         // `Repeat' does not add its insn size to the jump target.
         Tuple { "[0-9]{2}|[0-9]"sv, "92"sv, 2u },
+        // Don't ForkJump to the next instruction, rerunning it would produce the same result. see ladybird#2398.
+        Tuple { "(xxxxxxxxxxxxxxxxxxxxxxx|xxxxxxxxxxxxxxxxxxxxxxx)?b"sv, "xxxxxxxxxxxxxxxxxxxxxxx"sv, 0u },
     };
 
     for (auto& test : tests) {
         Regex<ECMA262> re(test.get<0>());
         auto result = re.match(test.get<1>());
-        EXPECT(result.success);
-        EXPECT_EQ(result.matches.first().view.length(), test.get<2>());
+        if (test.get<2>() != 0) {
+            EXPECT(result.success);
+            EXPECT_EQ(result.matches.first().view.length(), test.get<2>());
+        } else {
+            EXPECT(!result.success);
+        }
     }
 }
 
