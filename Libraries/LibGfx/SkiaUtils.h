@@ -14,6 +14,7 @@
 #include <LibGfx/PathSkia.h>
 #include <LibGfx/ScalingMode.h>
 #include <LibGfx/WindingRule.h>
+#include <core/SkPathEffect.h>
 #include <core/SkBlender.h>
 #include <core/SkColor.h>
 #include <core/SkColorType.h>
