@@ -809,6 +809,7 @@ set(SOURCES
     SVG/SVGDescElement.cpp
     SVG/SVGElement.cpp
     SVG/SVGEllipseElement.cpp
+    SVG/SVGFEBlendElement.cpp
     SVG/SVGFEFloodElement.cpp
     SVG/SVGFilterElement.cpp
     SVG/SVGForeignObjectElement.cpp
