@@ -54,6 +54,8 @@ static Array const attribute_style_properties {
     NamedPropertyID(CSS::PropertyID::Display),
     NamedPropertyID(CSS::PropertyID::FillOpacity),
     NamedPropertyID(CSS::PropertyID::FillRule),
+    NamedPropertyID(CSS::PropertyID::FloodColor),
+    NamedPropertyID(CSS::PropertyID::FloodOpacity),
     NamedPropertyID(CSS::PropertyID::FontFamily),
     NamedPropertyID(CSS::PropertyID::FontSize),
     NamedPropertyID(CSS::PropertyID::FontStyle),
